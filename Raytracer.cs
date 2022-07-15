@@ -92,7 +92,9 @@ namespace Template
             Vector3 w = plane.point - ray.origin;
             float area = Vector3.Cross(p.C - p.B, p.A - p.B).Length / 2;
             ray.scalar = Vector3.Dot(w, p.Normal) / Vector3.Dot(v, p.Normal);
-            if(ray.scalar < 0 && ray.scalar > 1)
+            if (Vector3.Cross(p.B - p.A, ray.origin + ray.direction * ray.scalar - p.A).Length / 2 < 0)
+                return false;
+            if (Vector3.Cross(p.A - p.C, ray.origin + ray.direction * ray.scalar - p.C).Length / 2 < 0)
                 return false;
             if (Vector3.Cross(p.C - p.B, ray.origin + ray.direction * ray.scalar - p.B).Length / 2 < 0)
                 return false;
