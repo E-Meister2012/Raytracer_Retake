@@ -37,7 +37,7 @@ namespace Template
             A = a;
             B = b;
             C = c;
-            Normal = Vector3.Cross((B - A), (C - A));
+            Normal = Vector3.Cross(B - A, C - A)* Vector3.Cross(B - A, C - A).Length;
             Normal.Normalize();
         }
     }

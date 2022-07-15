@@ -87,11 +87,7 @@ namespace Template
         }
         public bool Intersects(Triangle p, ref Ray ray)
         {
-            Vector3 v = ray.direction - ray.origin;
-            Plane plane = new Plane(p.Normal, p.A, new Vector3(1));
-            Vector3 w = plane.point - ray.origin;
-            float area = Vector3.Cross(p.C - p.B, p.A - p.B).Length / 2;
-            ray.scalar = Vector3.Dot(w, p.Normal) / Vector3.Dot(v, p.Normal);
+            float scalar = -(Vector3.Dot(p.Normal, ray.origin) - Vector3.Dot(p.Normal, p.A)) / Vector3.Dot(p.Normal, ray.direction);
             if (Vector3.Cross(p.B - p.A, ray.origin + ray.direction * ray.scalar - p.A).Length / 2 < 0)
                 return false;
             if (Vector3.Cross(p.A - p.C, ray.origin + ray.direction * ray.scalar - p.C).Length / 2 < 0)
