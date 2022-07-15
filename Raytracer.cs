@@ -41,6 +41,7 @@ namespace Template
                 {
                     //reset the primary ray and set the direction and normalize it
                     ray.scalar = 0;
+                    ray.RGB = Vector3.Zero;
                     ray.direction = upLeft + ((float)x / (float)OpenTKApp.app.screen.width) * horizon + ((float)y / (float)OpenTKApp.app.screen.height) * vertical;
                     ray.direction.Normalize();
                     //for every object
@@ -76,23 +77,19 @@ namespace Template
                     if (gotHit)
                         break;
                 }
-                if (!gotHit)
-                {
-                    r.RGB += l.returnColor(t.Normal, shadow.direction, new Vector3(1, 1, 0));
-                }
-                else
-                    r.RGB = new Vector3(0.07f);
+
+                  r.RGB += l.returnColor(t.Normal, shadow.direction, new Vector3(1, 1, 0));
             }
             return r.RGB + new Vector3(0.07f);
         }
         public bool Intersects(Triangle p, ref Ray ray)
         {
             float scalar = -(Vector3.Dot(p.Normal, ray.origin) - Vector3.Dot(p.Normal, p.A)) / Vector3.Dot(p.Normal, ray.direction);
-            if (Vector3.Cross(p.B - p.A, ray.origin + ray.direction * ray.scalar - p.A).Length / 2 < 0)
+            if (Vector3.Dot(Vector3.Cross(p.B - p.A, ray.origin + ray.direction * ray.scalar - p.A), p.Normal)< 0)
                 return false;
-            if (Vector3.Cross(p.A - p.C, ray.origin + ray.direction * ray.scalar - p.C).Length / 2 < 0)
+            if (Vector3.Dot(Vector3.Cross(p.A - p.C, ray.origin + ray.direction * ray.scalar - p.C), p.Normal)< 0)
                 return false;
-            if (Vector3.Cross(p.C - p.B, ray.origin + ray.direction * ray.scalar - p.B).Length / 2 < 0)
+            if (Vector3.Dot(Vector3.Cross(p.C - p.B, ray.origin + ray.direction * ray.scalar - p.B), p.Normal)< 0)
                 return false;
             alpha = Vector3.Cross(p.C - p.B, ray.origin + ray.direction * ray.scalar - p.B).Length / 2;
             beta = Vector3.Cross(p.A - p.C, ray.origin + ray.direction * ray.scalar - p.C).Length / 2;
