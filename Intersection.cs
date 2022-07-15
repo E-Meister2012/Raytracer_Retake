@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Template
 {
-    internal class Application
+    internal class Intersection
     {
-        public void application()
-        {
-            //Raytracer.Render();
-        }
+        public Raytracer.Ray ray = new Raytracer.Ray();
+        public Primitive lastHit;
     }
 }

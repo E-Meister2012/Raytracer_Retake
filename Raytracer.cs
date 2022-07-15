@@ -10,23 +10,23 @@ namespace Template
 {
     internal class Raytracer
     {
-        float alpha, beta, gamma;
         Vector3 upLeft;
         Vector3 upRight;
         Vector3 downLeft;
         Ray ray = new Ray();
-        Scene scene = new Scene();
-        Camera camera = new Camera(Vector3.Zero, new Vector3(0, 0, 1), new Vector3(0, 1, 0), 0);
-        public bool raytracing(Triangle t, Vector3 P)
-        {
-            if (Vector3.Cross(t.B - t.A, P - t.A).Length / 2 < 0) return false;
-            if (Vector3.Cross(t.C - t.B, P - t.B).Length / 2 < 0) return false;
-            if (Vector3.Cross(t.A - t.C, P - t.C).Length / 2 < 0) return false;
-            //Area XYZ = || (Z - Y) * (X - Y) || / 2
-            //shading normal = aA * nA + aB * nB + aC * nC;
-            return true;
+        Scene scene;
+        Camera camera;
+        Intersection intersection = new Intersection();
+        //public bool raytracing(Triangle t, Vector3 P)
+        //{
+        //    if (Vector3.Cross(t.B - t.A, P - t.A).Length / 2 < 0) return false;
+        //    if (Vector3.Cross(t.C - t.B, P - t.B).Length / 2 < 0) return false;
+        //    if (Vector3.Cross(t.A - t.C, P - t.C).Length / 2 < 0) return false;
+        //    //Area XYZ = || (Z - Y) * (X - Y) || / 2
+        //    //shading normal = aA * nA + aB * nB + aC * nC;
+        //    return true;
 
-        }
+        //}
         internal void Render()
         {
             //the width of the plane
@@ -41,22 +41,29 @@ namespace Template
                 {
                     //reset the primary ray and set the direction and normalize it
                     ray.scalar = 0;
-                    ray.RGB = Vector3.Zero;
-                    ray.direction = upLeft + ((float)x / (float)OpenTKApp.app.screen.width) * horizon + ((float)y / (float)OpenTKApp.app.screen.height) * vertical;
+                    Intersection near = new Intersection();
+                    Vector3 RGB = new Vector3(0);
+                    near.ray.scalar = float.MaxValue;
+                    ray.direction = upLeft - (x / OpenTKApp.app.screen.width) * horizon + (y / OpenTKApp.app.screen.height) * vertical;
                     ray.direction.Normalize();
                     //for every object
                     foreach (Primitive p in scene.primitives)
                     {
-                        ray.scalar = 1;
-                        if(p is Triangle)
                         if (Intersects((Triangle)p, ref ray))
                         {
-                                ray.RGB = LightColor(ray, (Triangle)p);
+                            if (ray.scalar < near.ray.scalar)
+                            {
+                                near.ray = ray;
+                                near.lastHit = p;
+                            }
                         }
                     }
-                    OpenTKApp.app.screen.Plot(x, y, CalcColor((int)(MathHelper.Clamp(ray.RGB.X, 0, 1) * 255),
-                    (int)(MathHelper.Clamp(ray.RGB.Y, 0, 1) * 255),
-                    (int)(MathHelper.Clamp(ray.RGB.Z, 0, 1) * 255)));
+                    if (near.lastHit != null)
+                        RGB = LightColor(near.ray, (Triangle)near.lastHit);
+                    OpenTKApp.app.screen.Plot(x, y, CalcColor(
+                    (int)(MathHelper.Clamp(RGB.X, 0f, 1f) * 255),
+                    (int)(MathHelper.Clamp(RGB.Y, 0f, 1f) * 255),
+                    (int)(MathHelper.Clamp(RGB.Z, 0f, 1f) * 255)));
 
                 }
             }
@@ -84,21 +91,31 @@ namespace Template
         }
         public bool Intersects(Triangle p, ref Ray ray)
         {
+            if (intersectTriangle((Triangle)p, ref ray))
+            {
+                intersection.ray = ray;
+                intersection.lastHit = p;
+                return true;
+            }
+            else return false;
+        }
+        public bool intersectTriangle(Triangle p, ref Ray ray)
+        {
+            if (Vector3.Dot(ray.direction, p.Normal) <= 0.00001)
+            if (Vector3.Dot(ray.direction, p.Normal) <= 0.00001)
+                return false;
             float scalar = -(Vector3.Dot(p.Normal, ray.origin) - Vector3.Dot(p.Normal, p.A)) / Vector3.Dot(p.Normal, ray.direction);
-            if (Vector3.Dot(Vector3.Cross(p.B - p.A, ray.origin + ray.direction * ray.scalar - p.A), p.Normal)< 0)
+            if (Math.Abs(scalar) <= 0.00001)
                 return false;
-            if (Vector3.Dot(Vector3.Cross(p.A - p.C, ray.origin + ray.direction * ray.scalar - p.C), p.Normal)< 0)
-                return false;
-            if (Vector3.Dot(Vector3.Cross(p.C - p.B, ray.origin + ray.direction * ray.scalar - p.B), p.Normal)< 0)
-                return false;
-            alpha = Vector3.Cross(p.C - p.B, ray.origin + ray.direction * ray.scalar - p.B).Length / 2;
-            beta = Vector3.Cross(p.A - p.C, ray.origin + ray.direction * ray.scalar - p.C).Length / 2;
-            gamma = 1 - beta - alpha;
-            return true;
+            ray.scalar = scalar;
+                return (Vector3.Dot(Vector3.Cross(p.B - p.A, ray.origin + ray.direction * ray.scalar - p.A), p.Normal) < 0)
+                && (Vector3.Dot(Vector3.Cross(p.A - p.C, ray.origin + ray.direction * ray.scalar - p.C), p.Normal) < 0)
+                    && (Vector3.Dot(Vector3.Cross(p.C - p.B, ray.origin + ray.direction * ray.scalar - p.B), p.Normal) < 0);
+
         }
         internal int CalcColor(int red, int green, int blue)
         {
-            return (red << 16) + (blue << 8) + blue;
+            return (red << 16) + (green << 8) + blue;
         }
 
         internal struct Ray
@@ -115,7 +132,7 @@ namespace Template
             ray.origin = camera.position;
 
             //calculating the edge points of the plane
-            Vector3 center = camera.position + camera.lookAtDirection * camera.FOV;
+            Vector3 center = camera.position + camera.lookAtDirection;
             Vector3 rightDirection = Vector3.Cross(camera.upDirection, camera.lookAtDirection);
             upLeft = center + camera.upDirection - rightDirection;
             upRight = center + camera.upDirection + rightDirection;

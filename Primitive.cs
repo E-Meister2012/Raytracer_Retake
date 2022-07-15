@@ -38,6 +38,8 @@ namespace Template
             B = b;
             C = c;
             Normal = Vector3.Cross(B - A, C - A);
+            if (Vector3.CalculateAngle(Normal, new Vector3(0, 0, 1)) > MathHelper.DegreesToRadians(90))
+                Normal *= -1;
             Normal.Normalize();
         }
     }

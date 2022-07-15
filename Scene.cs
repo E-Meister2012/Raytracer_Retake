@@ -10,9 +10,6 @@ namespace Template
     {
         internal List<Light> lights = new List<Light>();
         internal List<Primitive> primitives = new List<Primitive>();
-        public void Intersect()
-        {
-            
-        }
+        public Scene() { }
     }
 }

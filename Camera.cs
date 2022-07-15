@@ -14,16 +14,14 @@ namespace Template
         public Vector3 lookAtDirection;
         public Vector3 upDirection;
         public float FOV;
-        internal Plane screen;
-        public Camera(Vector3 position, Vector3 lookAtDirection, Vector3 upDirection, float angle)
+        public Camera(Vector3 position, Vector3 lookAtDirection, Vector3 upDirection, float angle = 120)
         {
             this.position = position;
             this.lookAtDirection = lookAtDirection;
+            lookAtDirection.Normalize();
             this.upDirection = upDirection;
-            Vector3 rightDirection =Vector3.Cross(upDirection, lookAtDirection); 
-            this.FOV = 1/(float)Math.Tan(MathHelper.DegreesToRadians(angle / 2));
-            screen = new Plane(position + lookAtDirection, position + lookAtDirection * FOV, new Vector3(0));
-
+            upDirection.Normalize();
+            FOV = 1/(float)Math.Tan(MathHelper.DegreesToRadians(angle / 2));
         }
     }
 }

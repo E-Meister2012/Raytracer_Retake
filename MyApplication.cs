@@ -11,11 +11,11 @@ namespace Template
 		// initialize
 		public void Init()
 		{
+			camera = new Camera(new Vector3(0.6f, 0.4f, 1f), new Vector3(0, 0, 1), new Vector3(0, 1, 0));
 			scene = new Scene();
-			scene.primitives.Add(new Triangle(new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector3(0, 0, 1), new Vector3(1)));
-			scene.primitives.Add(new Triangle(new Vector3(0, 1, 5), new Vector3(3, 2, 0), new Vector3(4, 0, 2), new Vector3(1)));
-			scene.lights.Add(new Light(new Vector3(6, 2, 10), new Vector3(1), new Vector3(1)));
-			camera = new Camera(new Vector3(0,0,10), new Vector3(0, 0, -1), new Vector3(0, 1, 0), 100);
+			scene.primitives.Add(new Triangle(new Vector3(0, 0, 20), new Vector3(10, 0, 20), new Vector3(7, 8, 18), new Vector3(1)));
+			scene.primitives.Add(new Triangle(new Vector3(0.4f, 0.3f, 1.1f), new Vector3(0.6f, 0.3f, 1.1f), new Vector3(0.5f, 0.6f, 1.1f), new Vector3(1, 1, 0)));
+			scene.lights.Add(new Light(new Vector3(2, 2, 2f), 10f, new Vector3(1, 1, 1)));
 			raytracer = new Raytracer(scene, camera);
 		}
 		// tick: renders one frame
