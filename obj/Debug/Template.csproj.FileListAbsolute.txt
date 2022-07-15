@@ -1,0 +1,12 @@
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\obj\Debug\Template.csproj.SuggestedBindingRedirects.cache
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\obj\Debug\Template.csproj.CoreCompileInputs.cache
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\bin\Debug\INFOGR2022Template.exe.config
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\bin\Debug\INFOGR2022Template.exe
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\bin\Debug\INFOGR2022Template.pdb
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\bin\Debug\OpenTK.dll
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\bin\Debug\OpenTK.pdb
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\bin\Debug\OpenTK.xml
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\obj\Debug\Template.csproj.CopyComplete
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\obj\Debug\INFOGR2022Template.exe
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\obj\Debug\INFOGR2022Template.pdb
+C:\Users\ekere\Documents\Retake Raytracer\INFOGR2022Template\obj\Debug\Template.csproj.AssemblyReference.cache
